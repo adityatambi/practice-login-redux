@@ -1,9 +1,5 @@
-import { useReducer } from 'react';
-import './App.css';
-import { authenticate, User } from './api/authenticate';
-import { Header } from './Header';
-import { Main } from './Main';
-import { authorize } from './api/authorize';
+import { createContext, ReactNode, useContext, useReducer } from 'react';
+import { User } from './api/authenticate';
 
 type State = {
   user: undefined | User;
@@ -55,31 +51,26 @@ function reducer(state: State, action: Action): State {
   }
 }
 
-function App() {
+type AppContextType = State & {
+  dispatch: React.Dispatch<Action>;
+};
+
+const AppContext = createContext<AppContextType>({
+  ...initialState,
+  dispatch: () => {},
+});
+
+type Props = {
+  children: ReactNode;
+};
+
+export function AppProvider({ children }: Props) {
   const [{ user, permissions, loading }, dispatch] = useReducer(reducer, initialState);
-  async function handleSignInclick() {
-    dispatch({ type: 'authenticate' });
-    const authenticatedUser = await authenticate();
-    dispatch({
-      type: 'authenticated',
-      user: authenticatedUser,
-    });
-    if (authenticatedUser !== undefined) {
-      dispatch({ type: 'authorize' });
-      const authorizedPermissions = await authorize(authenticatedUser.id);
-      if (authorizedPermissions)
-        dispatch({
-          type: 'authorized',
-          permissions: authorizedPermissions,
-        });
-    }
-  }
   return (
-    <div className="max-w-7xl mx-auto px-4">
-      <Header user={user} onSignInClick={handleSignInclick} loading={loading} />
-      <Main user={user} permissions={permissions} />
-    </div>
+    <AppContext.Provider value={{ user, permissions, loading, dispatch }}>
+      {children}
+    </AppContext.Provider>
   );
 }
 
-export default App;
+export const useAppContext = () => useContext(AppContext);

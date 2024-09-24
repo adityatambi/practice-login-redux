@@ -9,6 +9,9 @@ export function LandingPage() {
       <Link to={'loginUseContext'} className="hover:underline block mb-2">
         Login Using useContext Hook
       </Link>
+      <Link to={'loginUseRedux'} className="hover:underline block mb-2">
+        Login Using Redux
+      </Link>
     </div>
   );
 }

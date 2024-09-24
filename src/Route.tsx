@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import AppUseContext from './AppUseContext';
 import App from './App';
 import { LandingPage } from './LandingPage';
+import AppUseRedux from './AppRedux';
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
   {
     path: '/loginUseContext',
     element: <AppUseContext />,
+  },
+  {
+    path: '/loginUseRedux',
+    element: <AppUseRedux />,
   },
 ]);
 
